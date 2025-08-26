@@ -76,18 +76,41 @@ def load_gif(filename):
 # ---------------------
 
 files = os.listdir("/image")
-while F := random.choice(files):
-    print(F)
+#while F := random.choice(files):
+
+
+try:
+    import microcontroller
+    file_index = microcontroller.nvm[0]
+    F = files[file_index]
+except:
+    file_index = 0
+    F = random.choice(files)
+    
+if True:
+    print(F, file_index)
     if F.lower().endswith('.jpg') or F.lower().endswith('.bmp'):
         load_image("/image/" + F)
-        break
+        #break
     if F.lower().endswith('.gif'):
+        print("Load Gif")
         load_gif("/image/" + F)
-        break
+        #break
+
+import digitalio, time
+button = digitalio.DigitalInOut(board.IO0)
+button.direction = digitalio.Direction.INPUT
+async def change_file():
+    while True:
+        if button.value == False:
+            microcontroller.nvm[0] = file_index+1
+            microcontroller.reset()
+        await asyncio.sleep(0)
 
 async def main():
     tasks = []
     #tasks.append(asyncio.create_task(update_pixel()))
+    tasks.append(asyncio.create_task(change_file()))
     if update_gif:
         tasks.append(asyncio.create_task(update_gif()))
     await asyncio.gather(*tasks)
