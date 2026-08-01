@@ -1,0 +1,17 @@
+These are the steps on how to add your images into your keychain!
+
+----- JPEG FILES -----
+[1] Open Microsoft Paint and create a new image of 240 x 240 pixels
+[2] Save it on your computer as a ".jpg" file
+[3] Drag and drop the file into the "image" folder
+
+----- GIF FILES -----
+[1] You may use EzGif to convert a video to Gif format. https://ezgif.com/video-to-gif
+[2] The keychain has a limited storage of 1 Megabyte. You may crop and compress your Gif to a small size.
+[3] Next, use EzGif and choose 'Resize' to 240 x 240 pixels. https://ezgif.com/maker
+[2] Save it on your computer as a ".gif" file
+[3] Drag and drop the file into the "image" folder
+
+----- ADDITIONAL SUPPORT -----
+If you need help, do follow and contact me on Instagram @CircuitBoardArtist!
+Feel free to share feedback and ideas with me! I am always looking for ways to improve my crafts!
