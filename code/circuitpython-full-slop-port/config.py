@@ -45,6 +45,10 @@ TOUCH_STABLE_SAMPLES = 2
 
 CONTROLLER_INTERVAL = 0.01
 
+SPLASH_IMAGE = "/assets/splash/maibadge_festival.jpg"
+SPLASH_MIN_SECONDS = 1.75
+SPLASH_READY_SECONDS = 0.35
+
 FACE_IMAGES = (
     "/assets/faces/maibear1.jpg",
     "/assets/faces/maibear_study_atb.jpg",

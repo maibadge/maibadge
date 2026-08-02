@@ -41,13 +41,48 @@ class Controller:
 
     async def run(self):
         display = self.hardware.display
-        group = display.show_solid(colors.DARK_PURPLE)
-        group.append(display.label("MaiBadge", 44, 96, colors.PINK, 3))
-        group.append(display.label("Calibrating touch...", 38, 145, colors.WHITE))
+        splash_started = time.monotonic()
+        try:
+            group, resources = display.image_group(config.SPLASH_IMAGE)
+            status_color = colors.DARK_PURPLE
+        except (OSError, ValueError):
+            group = display.show_solid(colors.DARK_PURPLE)
+            group.append(display.label("MaiBadge", 44, 96, colors.PINK, 3))
+            resources = []
+            status_color = colors.WHITE
+
+        calibrating, owned = display.pixel_text(
+            "CALIBRATING",
+            76,
+            184,
+            status_color,
+            transparent=True,
+        )
+        ready, ready_owned = display.pixel_text(
+            "READY!",
+            96,
+            184,
+            status_color,
+            transparent=True,
+        )
+        ready.hidden = True
+        group.append(calibrating)
+        group.append(ready)
+        resources.extend(owned)
+        resources.extend(ready_owned)
+        display.set_group(group, resources)
+
         await self.hardware.calibrate()
         print("Touch calibration:")
         for entry in self.hardware.touch.snapshot():
             print(entry)
+
+        remaining = config.SPLASH_MIN_SECONDS - (time.monotonic() - splash_started)
+        if remaining > 0:
+            await asyncio.sleep(remaining)
+        calibrating.hidden = True
+        ready.hidden = False
+        await asyncio.sleep(config.SPLASH_READY_SECONDS)
 
         await self._switch("face")
         while True:
