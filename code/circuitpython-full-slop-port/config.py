@@ -59,6 +59,16 @@ FACE_IMAGES = (
     "/assets/faces/maigameplay1.jpg",
     "/assets/faces/maigameplay2.jpg",
 )
+
+GIF_ASSETS = (
+    "/assets/gifs/ezgif-7-562f90826a.gif",
+    "/assets/gifs/greycat-faces_style_2.gif",
+    "/assets/gifs/greymecha.gif",
+    "/assets/gifs/maislides.gif",
+    "/assets/gifs/nyan-cat-kawaii.gif",
+)
+
+FACE_MEDIA = FACE_IMAGES + GIF_ASSETS
 MENU_BACKGROUND = "/assets/menu/menu_foreground.jpg"
 MENU_BACKGROUND_EMPTY = "/assets/menu/menu_foreground_1.jpg"
 MENU_ITEM_SELECTED = "/assets/menu/menu_item_indiv.jpg"

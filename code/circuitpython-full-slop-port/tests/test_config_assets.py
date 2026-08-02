@@ -1,6 +1,7 @@
 """Host-side pin-map and asset-manifest checks."""
 
 import os
+import struct
 import sys
 import types
 import unittest
@@ -24,7 +25,7 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(set(pins), set(range(1, 9)))
 
     def test_all_manifest_assets_exist(self):
-        paths = list(config.FACE_IMAGES) + [
+        paths = list(config.FACE_MEDIA) + list(config.GIF_ASSETS) + [
             config.MENU_BACKGROUND,
             config.MENU_BACKGROUND_EMPTY,
             config.MENU_ITEM_SELECTED,
@@ -34,6 +35,14 @@ class ConfigTests(unittest.TestCase):
         for circuitpy_path in paths:
             host_path = os.path.join(ROOT, circuitpy_path.lstrip("/").replace("/", os.sep))
             self.assertTrue(os.path.isfile(host_path), host_path)
+
+    def test_gifs_are_native_display_size(self):
+        for circuitpy_path in config.GIF_ASSETS:
+            host_path = os.path.join(ROOT, circuitpy_path.lstrip("/").replace("/", os.sep))
+            with open(host_path, "rb") as gif_file:
+                header = gif_file.read(10)
+            self.assertIn(header[:6], (b"GIF87a", b"GIF89a"), host_path)
+            self.assertEqual(struct.unpack("<HH", header[6:10]), (240, 240), host_path)
 
     def test_press_margin_exceeds_release_margin(self):
         self.assertGreater(config.TOUCH_PRESS_MARGIN, config.TOUCH_RELEASE_MARGIN)

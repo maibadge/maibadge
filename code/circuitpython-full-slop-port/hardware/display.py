@@ -6,7 +6,10 @@ import adafruit_imageload
 import board
 import busio
 import displayio
+import gifio
+import struct
 import terminalio
+import time
 from adafruit_display_text import bitmap_label
 from adafruit_gc9a01a import GC9A01A
 from fourwire import FourWire
@@ -39,6 +42,8 @@ class Display:
         self.bus.send(0x29, b"\x01")
         self.group = None
         self._resources = []
+        self._gif = None
+        self._gif_deadline = 0.0
         self.show_solid(colors.BLACK)
 
     @staticmethod
@@ -60,6 +65,7 @@ class Display:
         )
 
     def set_group(self, group, resources=None):
+        self.stop_gif()
         old_group = self.group
         self.group = group
         self._resources = resources or []
@@ -122,6 +128,49 @@ class Display:
         self.set_group(group, resources)
         return group
 
+    def start_gif(self, filename):
+        """Start a full-screen GIF and immediately blit its first frame."""
+        self.stop_gif()
+        self.set_group(displayio.Group())
+        self.display.auto_refresh = False
+        try:
+            self._gif = gifio.OnDiskGif(filename)
+            if self._gif.width != config.DISPLAY_WIDTH or self._gif.height != config.DISPLAY_HEIGHT:
+                raise ValueError("GIF must be 240x240")
+            delay = self._gif.next_frame()
+            self._blit_gif_frame()
+            self._gif_deadline = time.monotonic() + max(0.01, delay)
+        except Exception:
+            self.stop_gif()
+            raise
+
+    def update_gif(self, now):
+        """Advance at most one frame without blocking the controller loop."""
+        if self._gif is None or now < self._gif_deadline:
+            return False
+        delay = self._gif.next_frame()
+        self._blit_gif_frame()
+        after_blit = time.monotonic()
+        target = self._gif_deadline + max(0.01, delay)
+        self._gif_deadline = max(target, after_blit)
+        return True
+
+    def _blit_gif_frame(self):
+        self.bus.send(0x2A, struct.pack(">HH", 0, self._gif.width - 1))
+        self.bus.send(0x2B, struct.pack(">HH", 0, self._gif.height - 1))
+        self.bus.send(0x2C, self._gif.bitmap)
+
+    def stop_gif(self):
+        """Release the decoder and return the display to retained mode."""
+        gif = self._gif
+        self._gif = None
+        self._gif_deadline = 0.0
+        if gif is not None:
+            gif.deinit()
+            gc.collect()
+        if hasattr(self, "display"):
+            self.display.auto_refresh = True
+
     def show_error(self, message):
         group = displayio.Group()
         group.append(self.rectangle(240, 240, colors.DARK_PURPLE))
@@ -150,4 +199,5 @@ class Display:
         return lines
 
     def deinit(self):
+        self.stop_gif()
         displayio.release_displays()
