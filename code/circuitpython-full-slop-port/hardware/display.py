@@ -86,13 +86,22 @@ class Display:
         return tile, [bitmap, palette, tile]
 
     @staticmethod
-    def pixel_text(text, x, y, color=colors.WHITE, background=colors.BLACK):
+    def pixel_text(
+        text,
+        x,
+        y,
+        color=colors.WHITE,
+        background=colors.BLACK,
+        transparent=False,
+    ):
         """Render text with the original firmware's exact VGA 8x16 font."""
         width = max(1, len(text) * vga1_8x16.WIDTH)
         bitmap = displayio.Bitmap(width, vga1_8x16.HEIGHT, 2)
         palette = displayio.Palette(2)
         palette[0] = background
         palette[1] = color
+        if transparent:
+            palette.make_transparent(0)
 
         for char_index, character in enumerate(text):
             codepoint = ord(character)

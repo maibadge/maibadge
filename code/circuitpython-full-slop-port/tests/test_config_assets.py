@@ -29,6 +29,7 @@ class ConfigTests(unittest.TestCase):
             config.MENU_BACKGROUND_EMPTY,
             config.MENU_ITEM_SELECTED,
             config.MENU_ITEM_SMALL,
+            config.SONG_BACKGROUND,
         ]
         for circuitpy_path in paths:
             host_path = os.path.join(ROOT, circuitpy_path.lstrip("/").replace("/", os.sep))

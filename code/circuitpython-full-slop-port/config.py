@@ -63,6 +63,7 @@ MENU_BACKGROUND = "/assets/menu/menu_foreground.jpg"
 MENU_BACKGROUND_EMPTY = "/assets/menu/menu_foreground_1.jpg"
 MENU_ITEM_SELECTED = "/assets/menu/menu_item_indiv.jpg"
 MENU_ITEM_SMALL = "/assets/menu/menu_item_indiv_small_62.jpg"
+SONG_BACKGROUND = "/assets/menu/maisongchosen.jpg"
 
 MENU_ITEMS = (
     ("face", "face"),

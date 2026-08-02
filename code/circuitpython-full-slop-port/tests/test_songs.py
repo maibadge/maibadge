@@ -3,11 +3,20 @@
 import os
 import sys
 import unittest
+import hashlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-from apps.songs import SONGS, SongPlayer, note_frequency, parse_rtttl  # noqa: E402
+from apps.songs import (  # noqa: E402
+    QZKAGO,
+    SONGS,
+    SONG_TONE_DUTY,
+    SUPER_MARIO,
+    SongPlayer,
+    note_frequency,
+    parse_rtttl,
+)
 
 
 class FakeBuzzer:
@@ -34,6 +43,18 @@ class SongTests(unittest.TestCase):
         self.assertAlmostEqual(sequence[0][1], 0.5)
         self.assertAlmostEqual(sequence[1][1], 0.375)
 
+    def test_rtttl_sources_match_micropython(self):
+        # These fingerprints are from code/main/apps/maisong.py.  They make
+        # normalization or replacement of the original tunes a test failure.
+        self.assertEqual(
+            hashlib.sha256(SUPER_MARIO.encode()).hexdigest(),
+            "68b70ae360908945c221a2a44465bea78fed4bc0637bc2069f611b1092bae604",
+        )
+        self.assertEqual(
+            hashlib.sha256(QZKAGO.encode()).hexdigest(),
+            "ba7518659f595fb12b4c3d54130ba0d38c197f3c15e26bbe060c73a68efb8e1e",
+        )
+
     def test_all_songs_are_nonempty(self):
         for name, sequence in SONGS.values():
             self.assertTrue(name)
@@ -41,6 +62,12 @@ class SongTests(unittest.TestCase):
             for frequency, duration in sequence:
                 self.assertGreaterEqual(frequency, 0)
                 self.assertGreater(duration, 0)
+
+    def test_legacy_articulation_is_preserved(self):
+        self.assertEqual(SONG_TONE_DUTY["song_intro"], 1.0)
+        self.assertEqual(SONG_TONE_DUTY["song_eye"], 1.0)
+        self.assertEqual(SONG_TONE_DUTY["song_qzkago"], 0.9)
+        self.assertEqual(SONG_TONE_DUTY["song_mario"], 0.9)
 
     def test_player_advances_without_blocking(self):
         buzzer = FakeBuzzer()
@@ -55,6 +82,26 @@ class SongTests(unittest.TestCase):
         player.update(11.45)
         player.update(11.5)
         self.assertFalse(player.playing)
+        self.assertTrue(player.completed)
+        self.assertEqual(player.progress, 1.0)
+
+    def test_player_reports_progress_without_changing_sequence(self):
+        buzzer = FakeBuzzer()
+        player = SongPlayer(buzzer)
+        sequence = ((440, 1.0), (880, 1.0))
+        player.start(sequence, 10.0)
+        self.assertEqual(player.sequence, sequence)
+        self.assertAlmostEqual(player.progress_at(10.5), 0.25)
+        player.update(10.9)
+        player.update(11.0)
+        self.assertAlmostEqual(player.progress_at(11.5), 0.75)
+
+    def test_full_duty_sequence_has_no_inserted_gap(self):
+        buzzer = FakeBuzzer()
+        player = SongPlayer(buzzer)
+        player.start(((440, 1.0), (880, 1.0)), 10.0, tone_duty=1.0)
+        player.update(11.0)
+        self.assertEqual(buzzer.calls[-1], ("tone", 880))
 
 
 if __name__ == "__main__":
