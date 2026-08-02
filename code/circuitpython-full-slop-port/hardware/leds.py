@@ -29,6 +29,11 @@ class Leds:
         self._pixels.fill(color)
         self._pixels.show()
 
+    def set_pixel(self, index, color):
+        """Set one physical lane LED without changing the remaining lanes."""
+        self._pixels[index % config.PIXEL_COUNT] = color
+        self._pixels.show()
+
     def next_color(self):
         self.color_index = (self.color_index + 1) % len(self.COLORS)
         self.set_all(self.COLORS[self.color_index])
