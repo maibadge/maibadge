@@ -61,7 +61,7 @@ badge.
 
 ### Machine v2
 
-- Boots directly into the colour app; `color` is the first menu item.
+- Boots into the face gallery; `color` is the second menu item.
 - Colour app: ADVANCE cycles blue/red, SELECT opens the menu.
 - Gallery: ADVANCE next, SELECT menu.
 - Menu: ADVANCE next, SELECT activate.

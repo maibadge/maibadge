@@ -23,8 +23,8 @@ ENABLE_GIFS = True
 ENABLE_GAME = False
 ENABLE_DIAGNOSTICS = True
 STARTUP_STATUS = "STARTING"
-START_APP = "color"
-PRIMARY_MENU_ITEMS = (("color", "color"), ("face", "face"))
+START_APP = "face"
+PRIMARY_MENU_ITEMS = (("face", "face"), ("color", "color"))
 TOUCH_CONFIG = ()
 
 CONTROL_BINDINGS = {

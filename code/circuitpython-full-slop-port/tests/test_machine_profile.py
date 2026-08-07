@@ -60,8 +60,11 @@ class MachineProfileTests(unittest.TestCase):
         self.assertFalse(machine_v2.HAS_TOUCH)
         self.assertTrue(machine_v2.ENABLE_GIFS)
         self.assertFalse(machine_v2.ENABLE_GAME)
-        self.assertEqual(machine_v2.START_APP, "color")
-        self.assertEqual(machine_v2.PRIMARY_MENU_ITEMS[0], ("color", "color"))
+        self.assertEqual(machine_v2.START_APP, "face")
+        self.assertEqual(
+            machine_v2.PRIMARY_MENU_ITEMS,
+            (("face", "face"), ("color", "color")),
+        )
 
     def test_color_app_uses_advance_and_select(self):
         app = ColorApp(self.hardware)
