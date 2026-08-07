@@ -13,6 +13,18 @@ or:
 MAIBADGE_VARIANT = "machine_v2"
 ```
 
+Then select the UI:
+
+```toml
+MAIBADGE_UI = "display"
+```
+
+or:
+
+```toml
+MAIBADGE_UI = "headless"
+```
+
 ## Update an existing CircuitPython installation
 
 1. Connect the badge with a USB data cable and wait for the `CIRCUITPY` drive.
@@ -25,7 +37,8 @@ MAIBADGE_VARIANT = "machine_v2"
 6. Safely eject `CIRCUITPY`. CircuitPython normally reloads automatically;
    otherwise press RESET once.
 7. Open a serial console and confirm that `MaiBadge variant` reports the
-   profile selected in `settings.toml`.
+   profile selected in `settings.toml` and `MaiBadge UI` reports the selected
+   UI mode.
 
 Do not merge new folders over an unknown older installation indefinitely.
 Stale Python or library files can remain loadable. When changing variants,
@@ -35,6 +48,10 @@ their replacements.
 The `machine_v2` profile enables GIF playback for the verified N16R8 machine
 badge. `assets/splash/maibadge_festival_source.png` is an editable source file
 and may be omitted from any device upload.
+
+For headless mode, copying the complete tree is supported and recommended.
+`assets` may be omitted when space matters because headless mode lazily avoids
+all display and media imports.
 
 ## Fresh CircuitPython installation on ESP32-S3
 
@@ -75,6 +92,10 @@ N16R8 solely because the code supports that build.
 | LED item | Next menu item | Cycle colour |
 | Song | Replay | Return to menu |
 | Diagnostics | Record event | Return to menu |
+
+In headless mode, ADVANCE cycles the twelve LED modes and SELECT interrupts the
+current song and starts the next of the four songs. On the bear PCB, A and B
+provide the same respective functions.
 
 GPIO0 is a boot-strapping pin. Do not hold SELECT while powering or resetting
 the badge unless you intend to enter the ROM bootloader.

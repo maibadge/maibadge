@@ -38,6 +38,8 @@ CONTROL_BINDINGS = {
     "song_replay": (("button", "ADVANCE"),),
     "song_back": (("button", "SELECT"),),
     "diagnostics_back": (("button", "SELECT"),),
+    "headless_led": (("button", "ADVANCE"),),
+    "headless_song": (("button", "SELECT"),),
     "game_exit": (),
     "game_exit_finished": (),
     "game_replay": (),

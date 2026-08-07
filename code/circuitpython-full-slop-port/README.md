@@ -2,7 +2,8 @@
 
 This is the canonical CircuitPython 10.2.1 firmware for the bear-shaped and
 machine-shaped MaiBadge PCBs. Application, display, music, asset, and hardware
-driver code is shared. `settings.toml` selects a small hardware profile.
+driver code is shared. `settings.toml` selects a hardware profile and either
+the graphical or headless UI.
 
 See [MANUAL_UPLOAD.md](MANUAL_UPLOAD.md) for complete manual flashing and file
 copy instructions.
@@ -28,6 +29,24 @@ reset 12.
 `bear_v1` is the default when `MAIBADGE_VARIANT` is absent. Unknown values stop
 boot with an error instead of silently using the wrong GPIOs.
 
+## Select a UI mode
+
+Use the graphical display and touch/menu applications:
+
+```toml
+MAIBADGE_UI = "display"
+```
+
+Or run only buttons, LEDs, songs, and serial output without initializing the
+display or touch electrodes:
+
+```toml
+MAIBADGE_UI = "headless"
+```
+
+`display` is the default. This is an explicit setting because the current
+write-only display connection cannot reliably detect whether a panel exists.
+
 ## Features
 
 Shared features include:
@@ -38,7 +57,7 @@ Shared features include:
 - animated GIF gallery on profiles that enable it;
 - MaiMai-style menu and song screens;
 - four non-blocking PWM songs;
-- addressable LED colour modes;
+- addressable LED colours plus rainbow, chase, comet, and pulse animations;
 - integrated diagnostics;
 - the eight-lane rhythm game on the touch-enabled bear profile.
 
@@ -68,6 +87,13 @@ badge.
 - Songs: ADVANCE replay, SELECT menu.
 - Diagnostics: SELECT returns.
 
+### Headless mode
+
+- Bear: A cycles LED modes; B interrupts and starts the next song.
+- Machine: ADVANCE cycles LED modes; SELECT interrupts and starts the next song.
+- Status and song titles are printed to the serial console.
+- The display and touch hardware are not imported or initialized.
+
 GPIO0 doubles as the boot-strapping input on both boards. Holding its button
 during reset can enter the ESP32-S3 ROM bootloader.
 
@@ -77,7 +103,7 @@ during reset can enter the ESP32-S3 ROM bootloader.
 - `config.py` selects a board profile and defines shared assets/timing.
 - `controls.py` translates physical inputs into application actions.
 - `hardware/` owns each physical peripheral exactly once.
-- `apps/` contains gallery, menu, music, game, and diagnostics states.
+- `apps/` contains graphical states and the shared headless state.
 - `assets/` and `lib/` are the deployable media and CircuitPython libraries.
 - `tests/` contains host-side logic and profile checks.
 

@@ -4,7 +4,6 @@ import config
 
 from hardware.buttons import Buttons
 from hardware.buzzer import Buzzer
-from hardware.display import Display
 from hardware.leds import Leds
 
 
@@ -26,8 +25,12 @@ class NoTouchPads:
 
 class BadgeHardware:
     def __init__(self):
-        # Display first so initialization failures remain easy to diagnose.
-        self.display = Display()
+        self.display = None
+        if config.HAS_DISPLAY:
+            # Import lazily so headless installs do not require display modules.
+            from hardware.display import Display
+
+            self.display = Display()
         self.buttons = Buttons()
         if config.HAS_TOUCH:
             from hardware.touch import TouchPads
@@ -55,4 +58,5 @@ class BadgeHardware:
         self.touch.deinit()
         self.buzzer.deinit()
         self.leds.deinit()
-        self.display.deinit()
+        if self.display is not None:
+            self.display.deinit()

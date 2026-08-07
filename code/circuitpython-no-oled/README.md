@@ -1,38 +1,18 @@
-# MaiBadge bear: CircuitPython without a display
+# No-display firmware moved
 
-Minimal two-button firmware for CircuitPython 10.2.1 on the YD ESP32-S3 N16R8.
-It does not initialize the display or capacitive-touch inputs.
+The no-display implementation is now part of the canonical firmware in
+[`../circuitpython-full-slop-port`](../circuitpython-full-slop-port).
 
-## Install
+Select the PCB and enable headless mode in its `settings.toml`:
 
-Copy the contents of this directory to the root of `CIRCUITPY`.
+```toml
+MAIBADGE_VARIANT = "bear_v1"
+MAIBADGE_UI = "headless"
+```
 
-## Controls
+For the machine PCB, use `machine_v2` instead. In headless mode the display
+and touch hardware are not imported or initialized. The first button cycles
+the twelve LED modes; the second interrupts the current song and starts the
+next song.
 
-- Button A / GPIO9 cycles solid LED colours and animations.
-- Button B / GPIO0 stops the current song and starts the next one.
-
-Songs cycle through Mai Intro, Eye Song, QZKago, and Super Mario. The first
-press starts Mai Intro. LED modes begin off and cycle through solid colours,
-rainbow, chase, comet, and pulse.
-
-GPIO0 is a boot-strapping pin. Do not hold button B while resetting or powering
-the badge.
-
-## Pin map
-
-| Peripheral | GPIO |
-|---|---:|
-| LED-mode button | 9 |
-| Song button | 0 |
-| Eight NeoPixels | 15 |
-| PWM buzzer | 47 |
-
-## On-device smoke test
-
-After copying the firmware, open the serial console and confirm the firmware
-name and button instructions are printed. Press the LED button through all 12
-modes and verify every LED and animation. Press the song button four times and
-verify each complete song starts immediately; pressing it while a song is
-playing must interrupt that song and start the next one. Finally, reset without
-holding GPIO0 and confirm the LEDs start off and the buzzer stays silent.
+See the canonical firmware's `MANUAL_UPLOAD.md` for installation instructions.

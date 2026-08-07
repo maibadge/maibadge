@@ -5,12 +5,6 @@ import gc
 import time
 
 import config
-from apps.color import ColorApp
-from apps.diagnostics import DiagnosticsApp
-from apps.face import FaceApp
-from apps.game import GameApp
-from apps.menu import MenuApp
-from apps.song_app import SongApp
 from ui import colors
 
 
@@ -20,19 +14,35 @@ class Controller:
         self.app = None
 
     def _make_app(self, action):
+        if action == "headless":
+            from apps.headless import HeadlessApp
+
+            return HeadlessApp(self.hardware)
         if action == "color":
+            from apps.color import ColorApp
+
             return ColorApp(self.hardware)
         if action == "face":
+            from apps.face import FaceApp
+
             return FaceApp(self.hardware)
         if action == "menu":
+            from apps.menu import MenuApp
+
             return MenuApp(self.hardware)
         if action.startswith("song_"):
+            from apps.song_app import SongApp
+
             return SongApp(self.hardware, action)
         if action == "game":
             if not config.ENABLE_GAME:
                 raise ValueError("Game is disabled for " + config.VARIANT)
+            from apps.game import GameApp
+
             return GameApp(self.hardware)
         if action == "diagnostics":
+            from apps.diagnostics import DiagnosticsApp
+
             return DiagnosticsApp(self.hardware)
         raise ValueError("Unknown app action: " + action)
 
@@ -45,6 +55,11 @@ class Controller:
         await self.app.enter()
 
     async def run(self):
+        if not config.HAS_DISPLAY:
+            await self._switch("headless")
+            await self._run_loop()
+            return
+
         display = self.hardware.display
         splash_started = time.monotonic()
         try:
@@ -92,6 +107,9 @@ class Controller:
         await asyncio.sleep(config.SPLASH_READY_SECONDS)
 
         await self._switch(config.START_APP)
+        await self._run_loop()
+
+    async def _run_loop(self):
         while True:
             now = time.monotonic()
             action = None

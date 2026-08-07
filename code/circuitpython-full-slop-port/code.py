@@ -19,6 +19,7 @@ async def main():
     global hardware
     print("MaiBadge firmware", config.FIRMWARE_VERSION)
     print("MaiBadge variant", config.VARIANT)
+    print("MaiBadge UI", config.UI_MODE)
     print("CircuitPython", sys.implementation.version)
     print("Board", getattr(board, "board_id", "unknown"))
     print("Initial free heap", gc.mem_free())
@@ -36,6 +37,7 @@ except Exception as error:  # CircuitPython needs an on-device failure screen.
         print("Fatal error:", error)
     if hardware is not None:
         hardware.safe_outputs()
-        hardware.display.show_error(error)
+        if hardware.display is not None:
+            hardware.display.show_error(error)
     while True:
         pass

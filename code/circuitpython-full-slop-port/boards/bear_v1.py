@@ -47,6 +47,8 @@ CONTROL_BINDINGS = {
     "song_replay": (("touch", "R4"), ("button", "A")),
     "song_back": (("touch", "L4"), ("button", "B")),
     "diagnostics_back": (("touch", "L4"), ("button", "B")),
+    "headless_led": (("button", "A"),),
+    "headless_song": (("button", "B"),),
     "game_exit": (("button", "B"),),
     "game_exit_finished": (("touch", "L4"),),
     "game_replay": (("button", "A"),),

@@ -1,3 +1,4 @@
 # Select "bear_v1" or "machine_v2" before copying this tree to CIRCUITPY.
 MAIBADGE_VARIANT = "bear_v1"
-
+# Select "display" for the graphical UI or "headless" for buttons/LEDs/songs.
+MAIBADGE_UI = "display"
