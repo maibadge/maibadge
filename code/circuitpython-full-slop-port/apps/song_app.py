@@ -4,6 +4,7 @@ import displayio
 import time
 
 import config
+import controls
 from apps.base import App
 from apps.songs import SONGS, SONG_TONE_DUTY, SongPlayer
 from ui import colors
@@ -103,10 +104,24 @@ class SongApp(App):
             group.append(tile)
             resources.extend(owned)
 
-        group.append(display.rectangle(52, 18, colors.DARK_PURPLE, 48, 198))
-        group.append(display.rectangle(56, 18, colors.DARK_PURPLE, 140, 198))
-        self._append_text(group, resources, "B MENU", 50, 199, colors.WHITE)
-        self._append_text(group, resources, "A AGAIN", 140, 199, colors.WHITE)
+        group.append(display.rectangle(80, 18, colors.DARK_PURPLE, 28, 198))
+        group.append(display.rectangle(80, 18, colors.DARK_PURPLE, 132, 198))
+        self._append_text(
+            group,
+            resources,
+            config.CONTROL_LABELS["song_back"],
+            30,
+            199,
+            colors.WHITE,
+        )
+        self._append_text(
+            group,
+            resources,
+            config.CONTROL_LABELS["song_replay"],
+            134,
+            199,
+            colors.WHITE,
+        )
 
         display.set_group(group, resources)
 
@@ -166,12 +181,9 @@ class SongApp(App):
                     bitmap[x, y] = 1
 
     def handle_event(self, event, now):
-        kind, source, name = event
-        if kind != "press":
-            return None
-        if (source == "button" and name == "B") or (source == "touch" and name == "L4"):
+        if controls.matches(event, "song_back"):
             return "menu"
-        if (source == "button" and name == "A") or (source == "touch" and name == "R4"):
+        if controls.matches(event, "song_replay"):
             self.player.start(self.sequence, now, self.tone_duty)
             self._was_playing = True
             self._state_deadline = now + 0.35

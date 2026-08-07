@@ -1,0 +1,3 @@
+# Select "bear_v1" or "machine_v2" before copying this tree to CIRCUITPY.
+MAIBADGE_VARIANT = "bear_v1"
+

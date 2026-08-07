@@ -1,42 +1,49 @@
-"""MaiBadge hardware and application configuration."""
+"""Shared MaiBadge configuration selected by ``MAIBADGE_VARIANT``."""
 
-import board
+import os
 
-FIRMWARE_VERSION = "0.1.0"
+
+VARIANT = os.getenv("MAIBADGE_VARIANT") or "bear_v1"
+if VARIANT == "bear_v1":
+    from boards import bear_v1 as profile
+elif VARIANT == "machine_v2":
+    from boards import machine_v2 as profile
+else:
+    raise ValueError("Unknown MAIBADGE_VARIANT: " + VARIANT)
+
+FIRMWARE_VERSION = "0.2.0-" + VARIANT
 EXPECTED_CIRCUITPYTHON = "10.2.1"
-EXPECTED_BOARD_ID = "yd_esp32_s3_n16r8"
+EXPECTED_BOARD_ID = profile.EXPECTED_BOARD_ID
 
 DISPLAY_WIDTH = 240
 DISPLAY_HEIGHT = 240
 DISPLAY_BAUDRATE = 24_000_000
-DISPLAY_CLOCK = board.GPIO14
-DISPLAY_MOSI = board.GPIO13
-DISPLAY_DC = board.GPIO10
-DISPLAY_CS = board.GPIO11
-DISPLAY_RESET = board.GPIO12
+DISPLAY_CLOCK = profile.DISPLAY_CLOCK
+DISPLAY_MOSI = profile.DISPLAY_MOSI
+DISPLAY_DC = profile.DISPLAY_DC
+DISPLAY_CS = profile.DISPLAY_CS
+DISPLAY_RESET = profile.DISPLAY_RESET
 
-PIXEL_PIN = board.GPIO15
+PIXEL_PIN = profile.PIXEL_PIN
 PIXEL_COUNT = 8
 PIXEL_BRIGHTNESS = 1.0
 
-BUZZER_PIN = board.GPIO47
+BUZZER_PIN = profile.BUZZER_PIN
 BUZZER_DUTY = 24_000
 
-BUTTON_PINS = (board.GPIO9, board.GPIO0)
-BUTTON_NAMES = ("A", "B")
+BUTTON_PINS = profile.BUTTON_PINS
+BUTTON_NAMES = profile.BUTTON_NAMES
 BUTTON_ACTIVE_LOW = True
 
-# Preserve the physical naming used by the original MicroPython firmware.
-TOUCH_CONFIG = (
-    ("R1", board.GPIO1),
-    ("L1", board.GPIO2),
-    ("L3", board.GPIO3),
-    ("R3", board.GPIO4),
-    ("R2", board.GPIO5),
-    ("R4", board.GPIO6),
-    ("L4", board.GPIO7),
-    ("L2", board.GPIO8),
-)
+HAS_TOUCH = profile.HAS_TOUCH
+ENABLE_GIFS = profile.ENABLE_GIFS
+ENABLE_GAME = profile.ENABLE_GAME
+ENABLE_DIAGNOSTICS = profile.ENABLE_DIAGNOSTICS
+STARTUP_STATUS = profile.STARTUP_STATUS
+TOUCH_CONFIG = profile.TOUCH_CONFIG
+CONTROL_BINDINGS = profile.CONTROL_BINDINGS
+CONTROL_LABELS = profile.CONTROL_LABELS
+GAME_LANE_BINDINGS = profile.GAME_LANE_BINDINGS
 TOUCH_SAMPLE_INTERVAL = 0.015
 TOUCH_CALIBRATION_SAMPLES = 48
 TOUCH_PRESS_MARGIN = 500
@@ -72,7 +79,7 @@ GIF_ASSETS = (
     "/assets/gifs/nyan-cat-kawaii.gif",
 )
 
-FACE_MEDIA = FACE_IMAGES + GIF_ASSETS
+FACE_MEDIA = FACE_IMAGES + GIF_ASSETS if ENABLE_GIFS else FACE_IMAGES
 MENU_BACKGROUND = "/assets/menu/menu_foreground.jpg"
 MENU_BACKGROUND_EMPTY = "/assets/menu/menu_foreground_1.jpg"
 MENU_ITEM_SELECTED = "/assets/menu/menu_item_indiv.jpg"
@@ -86,5 +93,8 @@ MENU_ITEMS = (
     ("buzzeye", "song_eye"),
     ("buzzqz", "song_qzkago"),
     ("buzzmario", "song_mario"),
-    ("game", "game"),
 )
+if ENABLE_GAME:
+    MENU_ITEMS += (("game", "game"),)
+if ENABLE_DIAGNOSTICS:
+    MENU_ITEMS += (("diag", "diagnostics"),)

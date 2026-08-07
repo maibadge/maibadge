@@ -1,6 +1,7 @@
 """Main application launcher."""
 
 import config
+import controls
 from apps.base import App
 from ui import colors
 
@@ -60,16 +61,13 @@ class MenuApp(App):
 
     def handle_event(self, event, now):
         del now
-        kind, source, name = event
-        if kind != "press":
-            return None
-        if (source == "touch" and name == "R3") or (source == "button" and name == "A"):
+        if controls.matches(event, "menu_next"):
             self._move(1)
-        elif source == "touch" and name == "L3":
+        elif controls.matches(event, "menu_previous"):
             self._move(-1)
-        elif source == "button" and name == "B":
+        elif controls.matches(event, "menu_back"):
             return "face"
-        elif source == "touch" and name == "R4":
+        elif controls.matches(event, "menu_select"):
             action = config.MENU_ITEMS[self.index][1]
             if action == "led":
                 self.hardware.leds.next_color()

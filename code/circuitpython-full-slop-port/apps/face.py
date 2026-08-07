@@ -5,6 +5,7 @@ import gc
 import microcontroller
 
 import config
+import controls
 from apps.base import App
 from ui import colors
 
@@ -56,14 +57,11 @@ class FaceApp(App):
 
     def handle_event(self, event, now):
         del now
-        kind, source, name = event
-        if kind != "press":
-            return None
-        if (source == "touch" and name == "R3") or (source == "button" and name == "A"):
+        if controls.matches(event, "face_next"):
             self._move(1)
-        elif source == "touch" and name == "L3":
+        elif controls.matches(event, "face_previous"):
             self._move(-1)
-        elif (source == "touch" and name == "L4") or (source == "button" and name == "B"):
+        elif controls.matches(event, "face_menu"):
             return "menu"
         return None
 

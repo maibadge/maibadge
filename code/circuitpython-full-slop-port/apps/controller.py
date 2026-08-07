@@ -26,6 +26,8 @@ class Controller:
         if action.startswith("song_"):
             return SongApp(self.hardware, action)
         if action == "game":
+            if not config.ENABLE_GAME:
+                raise ValueError("Game is disabled for " + config.VARIANT)
             return GameApp(self.hardware)
         if action == "diagnostics":
             return DiagnosticsApp(self.hardware)
@@ -51,9 +53,10 @@ class Controller:
             resources = []
             status_color = colors.WHITE
 
+        status_x = max(0, 120 - ((len(config.STARTUP_STATUS) * 8) // 2))
         calibrating, owned = display.pixel_text(
-            "CALIBRATING",
-            76,
+            config.STARTUP_STATUS,
+            status_x,
             184,
             status_color,
             transparent=True,
@@ -73,9 +76,10 @@ class Controller:
         display.set_group(group, resources)
 
         await self.hardware.calibrate()
-        print("Touch calibration:")
-        for entry in self.hardware.touch.snapshot():
-            print(entry)
+        if config.HAS_TOUCH:
+            print("Touch calibration:")
+            for entry in self.hardware.touch.snapshot():
+                print(entry)
 
         remaining = config.SPLASH_MIN_SECONDS - (time.monotonic() - splash_started)
         if remaining > 0:

@@ -18,6 +18,7 @@ hardware = None
 async def main():
     global hardware
     print("MaiBadge firmware", config.FIRMWARE_VERSION)
+    print("MaiBadge variant", config.VARIANT)
     print("CircuitPython", sys.implementation.version)
     print("Board", getattr(board, "board_id", "unknown"))
     print("Initial free heap", gc.mem_free())

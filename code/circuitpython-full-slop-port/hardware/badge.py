@@ -1,10 +1,27 @@
 """Aggregate and own every MaiBadge peripheral exactly once."""
 
+import config
+
 from hardware.buttons import Buttons
 from hardware.buzzer import Buzzer
 from hardware.display import Display
 from hardware.leds import Leds
-from hardware.touch import TouchPads
+
+
+class NoTouchPads:
+    """No-op touch interface used by boards without touch electrodes."""
+
+    async def calibrate(self):
+        return
+
+    def poll(self):
+        return []
+
+    def snapshot(self):
+        return ()
+
+    def deinit(self):
+        return
 
 
 class BadgeHardware:
@@ -12,7 +29,12 @@ class BadgeHardware:
         # Display first so initialization failures remain easy to diagnose.
         self.display = Display()
         self.buttons = Buttons()
-        self.touch = TouchPads()
+        if config.HAS_TOUCH:
+            from hardware.touch import TouchPads
+
+            self.touch = TouchPads()
+        else:
+            self.touch = NoTouchPads()
         self.buzzer = Buzzer()
         self.leds = Leds()
 

@@ -8,6 +8,8 @@ try:
 except ImportError:
     microcontroller = None
 
+import config
+import controls
 from apps.base import App
 from apps.charts import TUTORIAL_CHART, TUTORIAL_DIFFICULTY, TUTORIAL_TITLE
 from ui import colors
@@ -23,7 +25,6 @@ SENSOR_DELTAS = (
     (-100, -40),
     (-40, -100),
 )
-PAD_TO_LOCATION = {"R1": 0, "R2": 1, "R3": 2, "R4": 3, "L4": 4, "L3": 5, "L2": 6, "L1": 7}
 TRAVEL_TIME = 1.20
 PERFECT_WINDOW = 0.075
 GREAT_WINDOW = 0.140
@@ -176,14 +177,15 @@ class GameApp(App):
         kind, source, name = event
         if kind != "press":
             return None
-        if (source == "button" and name == "B") or (
-            source == "touch" and name == "L4" and self.finished
+        if controls.matches(event, "game_exit") or (
+            self.finished and controls.matches(event, "game_exit_finished")
         ):
             return "menu"
-        if source == "button" and name == "A" and self.finished:
+        if self.finished and controls.matches(event, "game_replay"):
             return "game"
-        if source == "touch" and name in PAD_TO_LOCATION and not self.finished:
-            self._judge(PAD_TO_LOCATION[name], now)
+        location = config.GAME_LANE_BINDINGS.get((source, name))
+        if location is not None and not self.finished:
+            self._judge(location, now)
         return None
 
     def update(self, now):

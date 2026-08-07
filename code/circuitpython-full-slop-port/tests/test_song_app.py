@@ -53,10 +53,10 @@ class FakeTileGrid:
         self.hidden = False
 
 
-sys.modules.setdefault(
-    "displayio",
-    types.SimpleNamespace(Bitmap=FakeBitmap, Palette=FakePalette, TileGrid=FakeTileGrid),
-)
+fake_displayio = sys.modules.setdefault("displayio", types.SimpleNamespace())
+fake_displayio.Bitmap = FakeBitmap
+fake_displayio.Palette = FakePalette
+fake_displayio.TileGrid = FakeTileGrid
 
 import config  # noqa: E402
 from apps.song_app import SongApp  # noqa: E402
