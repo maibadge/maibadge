@@ -69,6 +69,7 @@ N16R8 solely because the code supports that build.
 
 | Screen | ADVANCE (GPIO21) | SELECT (GPIO0) |
 |---|---|---|
+| Colour screen | Cycle blue/red | Open menu |
 | Gallery | Next item | Open menu |
 | Menu | Next item | Activate item |
 | LED item | Next menu item | Cycle colour |

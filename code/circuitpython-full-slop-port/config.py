@@ -40,6 +40,7 @@ ENABLE_GIFS = profile.ENABLE_GIFS
 ENABLE_GAME = profile.ENABLE_GAME
 ENABLE_DIAGNOSTICS = profile.ENABLE_DIAGNOSTICS
 STARTUP_STATUS = profile.STARTUP_STATUS
+START_APP = profile.START_APP
 TOUCH_CONFIG = profile.TOUCH_CONFIG
 CONTROL_BINDINGS = profile.CONTROL_BINDINGS
 CONTROL_LABELS = profile.CONTROL_LABELS
@@ -86,8 +87,7 @@ MENU_ITEM_SELECTED = "/assets/menu/menu_item_indiv.jpg"
 MENU_ITEM_SMALL = "/assets/menu/menu_item_indiv_small_62.jpg"
 SONG_BACKGROUND = "/assets/menu/maisongchosen.jpg"
 
-MENU_ITEMS = (
-    ("face", "face"),
+MENU_ITEMS = profile.PRIMARY_MENU_ITEMS + (
     ("led", "led"),
     ("buzzintro", "song_intro"),
     ("buzzeye", "song_eye"),

@@ -33,6 +33,7 @@ boot with an error instead of silently using the wrong GPIOs.
 Shared features include:
 
 - festival splash screen;
+- a full-screen blue/red colour app using shades sampled from the reference artwork;
 - static face gallery with persistent selection;
 - animated GIF gallery on profiles that enable it;
 - MaiMai-style menu and song screens;
@@ -51,6 +52,8 @@ badge.
 
 ### Bear v1
 
+- Boots into the face gallery; `color` is the second menu item.
+- Colour app: R3/A next colour, L3 previous colour, L4/B menu.
 - Gallery: R3/A next, L3 previous, L4/B menu.
 - Menu: R3/A next, L3 previous, R4 select, B gallery.
 - Songs: R4/A replay, L4/B menu.
@@ -58,6 +61,8 @@ badge.
 
 ### Machine v2
 
+- Boots directly into the colour app; `color` is the first menu item.
+- Colour app: ADVANCE cycles blue/red, SELECT opens the menu.
 - Gallery: ADVANCE next, SELECT menu.
 - Menu: ADVANCE next, SELECT activate.
 - Songs: ADVANCE replay, SELECT menu.

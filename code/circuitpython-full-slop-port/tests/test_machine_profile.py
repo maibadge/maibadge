@@ -16,6 +16,7 @@ sys.modules.setdefault("microcontroller", types.SimpleNamespace(nvm=bytearray(8)
 
 import config  # noqa: E402
 from apps.face import FaceApp  # noqa: E402
+from apps.color import ColorApp  # noqa: E402
 from apps.menu import MenuApp  # noqa: E402
 from apps.song_app import SongApp  # noqa: E402
 from boards import machine_v2  # noqa: E402
@@ -59,6 +60,16 @@ class MachineProfileTests(unittest.TestCase):
         self.assertFalse(machine_v2.HAS_TOUCH)
         self.assertTrue(machine_v2.ENABLE_GIFS)
         self.assertFalse(machine_v2.ENABLE_GAME)
+        self.assertEqual(machine_v2.START_APP, "color")
+        self.assertEqual(machine_v2.PRIMARY_MENU_ITEMS[0], ("color", "color"))
+
+    def test_color_app_uses_advance_and_select(self):
+        app = ColorApp(self.hardware)
+        app._show = lambda: None
+        original = app.index
+        self.assertIsNone(app.handle_event(("press", "button", "ADVANCE"), 0.0))
+        self.assertEqual(app.index, (original + 1) % 2)
+        self.assertEqual(app.handle_event(("press", "button", "SELECT"), 0.0), "menu")
 
     def test_gallery_uses_advance_and_select(self):
         app = FaceApp(self.hardware)
@@ -71,10 +82,11 @@ class MachineProfileTests(unittest.TestCase):
     def test_menu_selects_led_and_song_items(self):
         app = MenuApp(self.hardware)
         app._draw = lambda: None
-        app.index = 1
+        actions = [action for _label, action in config.MENU_ITEMS]
+        app.index = actions.index("led")
         self.assertIsNone(app.handle_event(("press", "button", "SELECT"), 0.0))
         self.assertEqual(self.hardware.leds.cycles, 1)
-        app.index = 2
+        app.index = actions.index("song_intro")
         self.assertEqual(
             app.handle_event(("press", "button", "SELECT"), 0.0),
             "song_intro",

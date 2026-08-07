@@ -5,6 +5,7 @@ import gc
 import time
 
 import config
+from apps.color import ColorApp
 from apps.diagnostics import DiagnosticsApp
 from apps.face import FaceApp
 from apps.game import GameApp
@@ -19,6 +20,8 @@ class Controller:
         self.app = None
 
     def _make_app(self, action):
+        if action == "color":
+            return ColorApp(self.hardware)
         if action == "face":
             return FaceApp(self.hardware)
         if action == "menu":
@@ -88,7 +91,7 @@ class Controller:
         ready.hidden = False
         await asyncio.sleep(config.SPLASH_READY_SECONDS)
 
-        await self._switch("face")
+        await self._switch(config.START_APP)
         while True:
             now = time.monotonic()
             action = None

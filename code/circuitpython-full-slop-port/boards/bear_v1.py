@@ -22,6 +22,8 @@ ENABLE_GIFS = True
 ENABLE_GAME = True
 ENABLE_DIAGNOSTICS = True
 STARTUP_STATUS = "CALIBRATING"
+START_APP = "face"
+PRIMARY_MENU_ITEMS = (("face", "face"), ("color", "color"))
 
 TOUCH_CONFIG = (
     ("R1", board.GPIO1),
